@@ -1,0 +1,11 @@
+{
+"/api": {
+    "target": "http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com",
+    "secure": false,
+    "pathRewrite": {
+    "^/api": ""
+    },
+    "changeOrigin": true,
+    "logLevel": "debug"
+}
+}
