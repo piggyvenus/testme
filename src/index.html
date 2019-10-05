@@ -39,7 +39,7 @@
 
       //Controller Part
       app.controller("FruitManagementController", function ($scope, $http) {
-        function extractProperties(data){
+        function extractProperties(props){
           var keyValuePairs =data.split("\n");
           properties ={}
           for (i = 0; i < keyValuePairs.length; i++) {
