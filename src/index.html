@@ -39,10 +39,12 @@
 
       //Controller Part
       app.controller("FruitManagementController", function ($scope, $http) {
+        
         $http.get('./config-properties.json').then(function (response) {
-            console.log('backend URL is ', response.data.backendurl);
+            console.log('Backend service is ', response.data.backendurl); 
             svcurl = response.data.backendurl;
         });
+
         //Initialize page with default data which is blank in this example
         $scope.fruits = [];
 
