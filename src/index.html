@@ -24,7 +24,7 @@
     <script src="https://code.angularjs.org/1.2.16/angular-resource.js"></script>
     <script type="text/javascript">
 
-      //var apiUrl = "http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com";
+      var svcurl = "http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com";
 
       var app = angular.module("FruitManagement", []);
 
@@ -60,8 +60,8 @@
           if ($scope.form.id == -1) {
             //Id is absent so add fruits - POST operation
             method = "POST";
-            url = 'http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com/backend/api/fruits';
-            //url = apiUrl + '/backend/api/fruits';
+            //url = 'http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com/backend/api/fruits';
+            url = svcurl + '/backend/api/fruits';
             data.name = $scope.form.name;
             data.stock = $scope.form.stock;
             console.log(url);
@@ -69,8 +69,8 @@
           } else {
             //If Id is present, it's edit operation - PUT operation
             method = "PUT";
-            url = 'http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com/backend/api/fruits/' + $scope.form.id;
-            //url = apiUrl + '/backend/api/fruits/' + $scope.form.id;
+            //url = 'http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com/backend/api/fruits/' + $scope.form.id;
+            url = svcurl + '/backend/api/fruits/' + $scope.form.id;
             data.name = $scope.form.name;
             data.stock = $scope.form.stock;
             console.log(url);
@@ -89,8 +89,8 @@
         $scope.remove = function (fruit) {
           $http({
             method: 'DELETE',
-            url: 'http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com/backend/api/fruits/' + fruit.id
-            //url: apiUrl + '/backend/api/fruits/' + fruit.id
+            //url: 'http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com/backend/api/fruits/' + fruit.id
+            url: svcurl + '/backend/api/fruits/' + fruit.id
           }).then( _success, _error );
           //console.log(env.apiUrl);
         };
@@ -108,8 +108,8 @@
           //console.log(env.apiUrl);
           $http({
             method: 'GET',
-            url: 'http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com/backend/api/fruits',
-            //url: apiUrl + '/backend/api/fruits',
+            //url: 'http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com/backend/api/fruits',
+            url: svcurl + '/backend/api/fruits',
           }).then(function successCallback(response) {
             $scope.fruits = response.data;
           }, function errorCallback(response) {
