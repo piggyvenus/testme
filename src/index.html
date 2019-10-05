@@ -23,8 +23,8 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="https://code.angularjs.org/1.2.16/angular-resource.js"></script>
     <script type="text/javascript">
-    var test = angular.module('app', []);
-    var svcurl = "";
+    var test = angular.module('test', []);
+    //var svcurl = "";
     test.controller('test', function ($scope, $http) {
         function extractProperties(data){
             const lines = data.split("\n");
@@ -53,7 +53,7 @@
     });
 
 
-      //var svcurl = "http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com";
+      var svcurl = "http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com";
       
       var app = angular.module("FruitManagement", []);
 
