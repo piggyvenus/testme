@@ -23,37 +23,9 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="https://code.angularjs.org/1.2.16/angular-resource.js"></script>
     <script type="text/javascript">
-    var test = angular.module('test', []);
-    //var svcurl = "";
-    test.controller('test', function ($scope, $http) {
-        function extractProperties(data){
-            const lines = data.split("\n");
-            properties = {}
+      var svcurl = "";
 
-            for (const l of lines) {
-                const line = l.trim();
-                if (!line || line[0] === '#') {
-                    continue;
-                }
-                const keyValue = line.split("=");
-                const key = keyValue[0].trim();
-                const value = keyValue[1].trim();
-                properties[key] = value
-
-            }
-
-            return properties;
-        }
-
-        $http.get('config.properties').then(function (response) {
-            const properties = extractProperties(response.data);
-            console.log('URL is ', properties.backendurl);
-            svcurl = roperties.backendurl;
-        });
-    });
-
-
-      var svcurl = "http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com";
+      //var svcurl = "http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com";
       
       var app = angular.module("FruitManagement", []);
 
@@ -67,7 +39,21 @@
 
       //Controller Part
       app.controller("FruitManagementController", function ($scope, $http) {
-
+        function extractProperties(data){
+          var keyValuePairs =data.split("\n");
+          properties ={}
+          for (i = 0; i < keyValuePairs.length; i++) {
+            var keyValueArr=keyValuePairs[i].trim().split("=");
+            var key=keyValueArr[0];
+            var value=keyValueArr[1];
+            properties[key]=value
+          }
+          return properties;
+          }
+          $http.get('config.properties').then(function(response) {
+            var properties =  extractProperties(response.data)
+            console.log('service URL is ', properties.backendurl);
+        });
         //Initialize page with default data which is blank in this example
         $scope.fruits = [];
 
