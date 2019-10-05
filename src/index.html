@@ -23,9 +23,9 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="https://code.angularjs.org/1.2.16/angular-resource.js"></script>
     <script type="text/javascript">
-      var svcurl = "";
+      //var svcurl = "";
 
-      //var svcurl = "http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com";
+      var svcurl = "http://oceanic-lamp-welcome-oceanic-lamp.apps.cluster-6152.sandbox526.opentlc.com";
       
       var app = angular.module("FruitManagement", []);
 
@@ -39,11 +39,6 @@
 
       //Controller Part
       app.controller("FruitManagementController", function ($scope, $http) {
-        
-        $http.get('./config-properties.json').then(function (response) {
-            console.log('Backend service is ', response.data.backendurl); 
-            svcurl = response.data.backendurl;
-        });
 
         //Initialize page with default data which is blank in this example
         $scope.fruits = [];
