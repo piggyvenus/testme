@@ -1,0 +1,211 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+parameters:
+- name: APP_NAME
+  description: The name for the application
+  displayName: Application Name
+  required: true
+  value: testme1
+- name: WELCOME_IMAGE_NAME
+  description: The Welcome App's image name
+  displayName: Image Name
+  required: true
+  value: fabric8/launcher-creator-welcome-app
+- name: WELCOME_IMAGE_TAG
+  description: The Welcome App's image tag
+  displayName: Image Tag
+  required: true
+  value: latest
+- name: WELCOME_APP_CONFIG
+  description: The configuration for the welcome app
+  displayName: Welcome App Configuration
+  required: true
+  value: |-
+    {
+      "parts": [{
+        "capabilities": [{
+          "module": "capability-web-app",
+          "props": {},
+          "extra": {
+            "category": "frontend"
+          }
+        }, {
+          "module": "capability-welcome",
+          "props": {},
+          "extra": {
+            "category": "support"
+          }
+        }],
+        "shared": {
+          "runtime": {
+            "name": "angular",
+            "version": "community"
+          }
+        },
+        "extra": {
+          "runtimeInfo": {
+            "enumInfo": {
+              "id": "angular",
+              "name": "Angular",
+              "description": "A declarative JavaScript framework for building user interfaces.",
+              "icon": "data:image/svg+xml,%3c%3fxml version='1.0' encoding='utf-8'%3f%3e %3c!-- Generator: Adobe Illustrator 19.1.0%2c SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3e %3csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 250 250' style='enable-background:new 0 0 250 250%3b' xml:space='preserve'%3e %3cstyle type='text/css'%3e .st0%7bfill:%23DD0031%3b%7d .st1%7bfill:%23C3002F%3b%7d .st2%7bfill:white%3b%7d %3c/style%3e %3cg%3e %3cpolygon class='st0' points='125%2c30 125%2c30 125%2c30 31.9%2c63.2 46.1%2c186.3 125%2c230 125%2c230 125%2c230 203.9%2c186.3 218.1%2c63.2 '/%3e %3cpolygon class='st1' points='125%2c30 125%2c52.2 125%2c52.1 125%2c153.4 125%2c153.4 125%2c230 125%2c230 203.9%2c186.3 218.1%2c63.2 125%2c30 '/%3e %3cpath class='st2' d='M125%2c52.1L66.8%2c182.6h0h21.7h0l11.7-29.2h49.4l11.7%2c29.2h0h21.7h0L125%2c52.1L125%2c52.1L125%2c52.1L125%2c52.1 L125%2c52.1z M142%2c135.4H108l17-40.9L142%2c135.4z'/%3e %3c/g%3e %3c/svg%3e\n",
+              "metadata": {
+                "categories": ["frontend"],
+                "language": "javascript",
+                "website": "https://angular.io"
+              }
+            },
+            "image": "nodeshift/centos7-s2i-web-app",
+            "service": "testme1",
+            "route": "testme1"
+          },
+          "category": "frontend"
+        }
+      }],
+      "application": "testme1"
+    }
+- name: FRONTEND_SERVICE_NAME
+  description: The frontend service name for the welcome app
+  displayName: Frontend service name
+  required: true
+  value: testme1
+- name: BACKEND_SERVICE_NAME
+  description: The backend service name for the welcome app
+  displayName: Backend service name
+  required: true
+  value: testme1
+- name: SOURCE_REPOSITORY_PROVIDER
+  description: The source repository provider
+  displayName: Source Provider
+  value: GitHub
+- name: SOURCE_REPOSITORY_URL
+  description: The source URL for the application
+  displayName: Source URL
+- name: OPENSHIFT_CONSOLE_URL
+  description: The OpenShift Console URL for the application
+  displayName: OpenShift Console URL
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: ${APP_NAME}-welcome
+    labels:
+      app: ${APP_NAME}
+      creatorCategory: support
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - name: ${WELCOME_IMAGE_TAG}
+      from:
+        kind: DockerImage
+        name: ${WELCOME_IMAGE_NAME}:${WELCOME_IMAGE_TAG}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: ${APP_NAME}-welcome
+    labels:
+      app: ${APP_NAME}
+      creatorCategory: support
+  spec:
+    replicas: 1
+    selector:
+      app: ${APP_NAME}
+      deploymentconfig: ${APP_NAME}-welcome
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        labels:
+          app: ${APP_NAME}
+          deploymentconfig: ${APP_NAME}-welcome
+      spec:
+        containers:
+        - image: ${WELCOME_IMAGE_NAME}:${WELCOME_IMAGE_TAG}
+          name: ${APP_NAME}-welcome
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources:
+            requests:
+              cpu: 10m
+              memory: 8M
+            limits:
+              cpu: 50m
+              memory: 100Mi
+          env:
+          - name: WELCOME_APP_CONFIG
+            value: ${WELCOME_APP_CONFIG}
+          - name: OPENSHIFT_CONSOLE_URL
+            value: ${OPENSHIFT_CONSOLE_URL}
+          - name: SOURCE_REPOSITORY_PROVIDER
+            value: ${SOURCE_REPOSITORY_PROVIDER}
+          - name: SOURCE_REPOSITORY_URL
+            value: ${SOURCE_REPOSITORY_URL}
+          - name: FRONTEND_SERVICE_NAME
+            value: ${FRONTEND_SERVICE_NAME}
+          - name: BACKEND_SERVICE_NAME
+            value: ${BACKEND_SERVICE_NAME}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+            periodSeconds: 20
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+            periodSeconds: 20
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${APP_NAME}-welcome
+        from:
+          kind: ImageStreamTag
+          name: ${APP_NAME}-welcome:${WELCOME_IMAGE_TAG}
+      type: ImageChange
+  status:
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    updatedReplicas: 0
+    availableReplicas: 0
+    unavailableReplicas: 0
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: ${APP_NAME}-welcome
+    labels:
+      app: ${APP_NAME}
+      creatorCategory: support
+  spec:
+    ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    selector:
+      app: ${APP_NAME}
+      deploymentconfig: ${APP_NAME}-welcome
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${APP_NAME}-welcome
+    labels:
+      app: ${APP_NAME}
+      creatorCategory: support
+    annotations:
+      console.alpha.openshift.io/overview-app-route: 'true'
+  spec:
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: ${APP_NAME}-welcome
