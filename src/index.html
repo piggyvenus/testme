@@ -45,7 +45,9 @@
           for (i = 0; i < keyValuePairs.length; i++) {
             var keyValueArr=keyValuePairs[i].trim().split("=");
             var key=keyValueArr[0];
+            console.log('key is: ',key);
             var value=keyValueArr[1];
+            console.log('value is: ',value);
             properties[key]=value
           }
           return properties;
